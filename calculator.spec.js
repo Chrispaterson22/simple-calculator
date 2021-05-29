@@ -26,4 +26,24 @@ describe('calculator.js test suite', () => {
 
 		expect(calculator.total).toBe(100)
 	})
+
+	// toBe
+	// toBeFalsy
+	it('should initialize the total', () => {
+		const calculator = new Calculator()
+
+		expect(calculator.total).toBe(0)
+		expect(calculator.total).toBeFalsy()
+	})
+
+	// toEqual
+	// toBeTruthy
+	it('can be instantiated', () => {
+		const calculator = new Calculator()
+		const calculator2 = new Calculator()
+
+		expect(calculator).toBeTruthy()
+		expect(calculator2).toBeTruthy()
+		expect(calculator).toEqual(calculator2)
+	})
 })
