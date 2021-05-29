@@ -1,122 +1,133 @@
 describe('calculator.js test suite', () => {
-	it('should add numbers to total', () => {
-		const calculator = new Calculator()
-		calculator.add(5)
-		// expect to be 5
-		expect(calculator.total).toBe(5)
-	})
-	it('should subtract numbers from total', () => {
-		const calculator = new Calculator()
-		calculator.total = 30
-		calculator.subtract(5)
+	describe('Calculator', () => {
+		let calculator
+		let calculator2
 
-		expect(calculator.total).toBe(25)
-	})
-	it('should multiply total by number', () => {
-		const calculator = new Calculator()
-		calculator.total = 100
-		calculator.multiply(2)
+		beforeEach(() => {
+			// Anything inside this block executes before each spec (it) inside this describe.
+			calculator = new Calculator()
+			calculator2 = new Calculator()
+		})
 
-		expect(calculator.total).toBe(200)
-	})
-	it('should divide total by number', () => {
-		const calculator = new Calculator()
-		calculator.total = 200
-		calculator.divide(2)
+		afterEach(() => {
+			// Anything inside this block executes after each spec (it) inside this describe.
+		})
 
-		expect(calculator.total).toBe(100)
-	})
+		// toBe
+		// toBeFalsy
+		it('should initialize the total', () => {
+			expect(calculator.total).toBe(0)
+			expect(calculator.total).toBeFalsy()
+		})
 
-	// Examples of different Matchers in Jasmine
+		// toEqual
+		// toBeTruthy
+		// toContain
+		// Custom Matcher
+		it('can be instantiated', () => {
+			jasmine.addMatchers(customMatchers)
 
-	// toBe
-	// toBeFalsy
-	it('should initialize the total', () => {
-		const calculator = new Calculator()
+			expect(calculator).toBeCalculator()
+			expect(2).not.toBeCalculator()
+			expect(calculator).toBeTruthy()
+			expect(calculator2).toBeTruthy()
+			expect(calculator).toEqual(calculator2)
+			expect(calculator.constructor.name).toContain('ator') // 'Calculator'
+		})
 
-		expect(calculator.total).toBe(0)
-		expect(calculator.total).toBeFalsy()
-	})
+		// use of: not
+		it('instantiates unique object', () => {
+			expect(calculator).not.toBe(calculator2)
+		})
 
-	// toEqual
-	// toBeTruthy
-	// toContain
-	// Custom Matcher
-	it('can be instantiated', () => {
-		jasmine.addMatchers(customMatchers)
-		const calculator = new Calculator()
-		const calculator2 = new Calculator()
+		// toBeDefined, toBeUndefined
+		it('has common operations', () => {
+			expect(calculator.add).toBeDefined()
+			expect(calculator.subtract).toBeDefined()
+			expect(calculator.multiply).toBeDefined()
+			expect(calculator.divide).toBeDefined()
+		})
 
-		expect(calculator).toBeCalculator()
-		expect(2).not.toBeCalculator()
-		expect(calculator).toBeTruthy()
-		expect(calculator2).toBeTruthy()
-		expect(calculator).toEqual(calculator2)
-		expect(calculator.constructor.name).toContain('ator') // 'Calculator'
-	})
+		// toBeNull
+		it('can overwrite total', () => {
+			calculator.total = null
+			expect(calculator.total).toBeNull()
+		})
 
-	// use of: not
-	it('instantiates unique object', () => {
-		const calculator1 = new Calculator()
-		const calculator2 = new Calculator()
+		describe('add()', () => {
+			it('should add numbers to total', () => {
+				calculator.add(5)
+				// expect to be 5
+				expect(calculator.total).toBe(5)
+			})
 
-		expect(calculator1).not.toBe(calculator2)
-	})
+			// toMatch
+			// match anything! with jasmine.anything() only fails for null and undefined
+			// 3rd party toBeNumber
+			it('returns the total', () => {
+				calculator.total = 50
 
-	// toBeDefined, toBeUndefined
-	it('has common operations', () => {
-		const calculator = new Calculator()
+				expect(calculator.add(20)).toBe(70)
+				expect(calculator.total).toMatch(/-?\d+/)
+				expect(calculator.total).toBeNumber()
 
-		expect(calculator.add).toBeDefined()
-		expect(calculator.subtract).toBeDefined()
-		expect(calculator.multiply).toBeDefined()
-		expect(calculator.divide).toBeDefined()
-	})
+				// asymmetric matchers
+				// not equal in each side!
+				expect(calculator.total).toEqual(jasmine.anything())
+			})
+		})
 
-	// toBeNull
-	it('can overwrite total', () => {
-		const calculator = new Calculator()
+		describe('subtract()', () => {
+			it('should subtract numbers from total', () => {
+				const calculator = new Calculator()
+				calculator.total = 30
+				calculator.subtract(5)
 
-		calculator.total = null
-		expect(calculator.total).toBeNull()
-	})
+				expect(calculator.total).toBe(25)
+			})
+		})
 
-	// toBeNaN
-	it('does not handle NaN', () => {
-		const calculator = new Calculator()
+		describe('multiply()', () => {
+			it('should multiply total by number', () => {
+				const calculator = new Calculator()
+				calculator.total = 100
+				calculator.multiply(2)
 
-		calculator.total = 20
-		calculator.multiply('a')
+				expect(calculator.total).toBe(200)
+			})
 
-		expect(calculator.total).toBeNaN()
-	})
+			// toBeNaN
+			it('does not handle NaN', () => {
+				const calculator = new Calculator()
 
-	// toThrow
-	// toThrowError
-	it('handles divide by zero', () => {
-		const calculator = new Calculator()
+				calculator.total = 20
+				calculator.multiply('a')
 
-		expect(() => calculator.divide(0)).toThrow()
-		expect(() => calculator.divide(0)).toThrowError(Error)
-		expect(() => calculator.divide(0)).toThrowError(
-			Error,
-			'Cannot divide by zero'
-		)
-	})
+				expect(calculator.total).toBeNaN()
+			})
+		})
 
-	// toMatch
-	// match anything! with jasmine.anything() only fails for null and undefined
-	// 3rd party toBeNumber
-	it('returns the total', () => {
-		const calculator = new Calculator()
-		calculator.total = 50
+		describe('divide()', () => {
+			it('should divide total by number', () => {
+				const calculator = new Calculator()
+				calculator.total = 200
+				calculator.divide(2)
 
-		expect(calculator.add(20)).toBe(70)
-		expect(calculator.total).toMatch(/-?\d+/)
-		expect(calculator.total).toBeNumber()
+				expect(calculator.total).toBe(100)
+			})
 
-		// asymmetric matchers
-		// not equal in each side!
-		expect(calculator.total).toEqual(jasmine.anything())
+			// toThrow
+			// toThrowError
+			it('handles divide by zero', () => {
+				const calculator = new Calculator()
+
+				expect(() => calculator.divide(0)).toThrow()
+				expect(() => calculator.divide(0)).toThrowError(Error)
+				expect(() => calculator.divide(0)).toThrowError(
+					Error,
+					'Cannot divide by zero'
+				)
+			})
+		})
 	})
 })
